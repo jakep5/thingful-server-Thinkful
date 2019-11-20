@@ -28,9 +28,12 @@ describe('Reviews Endpoints', function() {
     beforeEach('insert things', () =>
       helpers.seedThingsTables(
         db,
-        testUsers,
-        testThings,
+        testThings
       )
+    )
+
+    beforeEach(() =>
+      helpers.seedUsers(db, testUsers)
     )
 
     it(`creates an review, responding with 201 and the new review`, function() {
