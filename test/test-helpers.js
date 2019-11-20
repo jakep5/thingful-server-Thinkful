@@ -255,6 +255,14 @@ function seedThingsTables(db, users, things, reviews=[]) {
       `SELECT setval('thingful_things_id_seq', ?)`,
       [things[things.length - 1].id],
     )
+
+    if(reviews.length) {
+      await trx.into('thingful_reviews').insert(reviews)
+      await trx.raw(
+        `SELECT setval('thingful_reviews_id_seq', ?)`,
+        [comments[comments.length - 1].id],
+      )
+    }
   })
 }
 
@@ -267,9 +275,12 @@ function seedMaliciousThing(db, user, thing) {
     )
 }
 
-function makeAuthHeader(user) {
-  const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
-  return `Basic ${token}`
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+  const token = jwt.sign({ user_id:user.id }, secret, {
+    subject: user.user_name,
+    algorithms: 'HS256'
+  })
+  return `Bearer ${token}`
 }
 
 module.exports = {
