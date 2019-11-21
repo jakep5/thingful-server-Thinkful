@@ -11,6 +11,11 @@ describe('Things Endpoints', function() {
     testReviews,
   } = helpers.makeThingsFixtures()
 
+  function makeAuthHeader(user) {
+    const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
+    return `Bearer ${token}`
+  }
+
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
@@ -105,6 +110,7 @@ describe('Things Endpoints', function() {
       beforeEach('insert things', () =>
         helpers.seedThingsTables(
           db,
+          testUsers,
           testThings,
           testReviews,
         )
@@ -140,10 +146,11 @@ describe('Things Endpoints', function() {
         )
       })
 
+
       it('removes XSS attack content', () => {
         return supertest(app)
           .get(`/api/things/${maliciousThing.id}`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .set('Authorization', helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect(res => {
             expect(res.body.title).to.eql(expectedThing.title)
@@ -169,13 +176,11 @@ describe('Things Endpoints', function() {
     })
 
     context('Given there are reviews for thing in the database', () => {
-      beforeEach(() =>
-        helpers.seedUsers(db, testUsers)
-      )
 
       beforeEach('insert things', () =>
         helpers.seedThingsTables(
           db,
+          testUsers,
           testThings,
           testReviews,
         )

@@ -28,13 +28,11 @@ describe('Reviews Endpoints', function() {
     beforeEach('insert things', () =>
       helpers.seedThingsTables(
         db,
+        testUsers,
         testThings
       )
     )
 
-    beforeEach(() =>
-      helpers.seedUsers(db, testUsers)
-    )
 
     it(`creates an review, responding with 201 and the new review`, function() {
       this.retries(3)
@@ -48,6 +46,7 @@ describe('Reviews Endpoints', function() {
       }
       return supertest(app)
         .post('/api/reviews')
+        .set('Authorization', helpers.makeAuthHeader(testUser))
         .send(newReview)
         .expect(201)
         .expect(res => {
@@ -96,6 +95,7 @@ describe('Reviews Endpoints', function() {
 
         return supertest(app)
           .post('/api/reviews')
+          .set('Authorization', helpers.makeAuthHeader(testUser))
           .send(newReview)
           .expect(400, {
             error: `Missing '${field}' in request body`,
