@@ -46,7 +46,7 @@ usersRouter
                         )
                             .then(user => {
                                 res
-                                    .statuus(201)
+                                    .status(201)
                                     .location(path.posix.join(req.originalUrl, `/${user.id}`))
                             })
                     })
