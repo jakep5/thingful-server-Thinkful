@@ -26,7 +26,7 @@ authRouter
                         })
 
                     return AuthService.comparePasswords(loginUser.password, dbUser.password)
-                        .then(compareMatch => {
+                        .then(compareMatch => { //bcrypt.compare returns a boolean via promise
                             if (!compareMatch)
                                 return res.status(400).json({
                                     error: 'Incorrect user_name or password',
