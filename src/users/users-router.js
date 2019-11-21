@@ -2,7 +2,7 @@ const express = require('express')
 const UsersService = require('./users-service')
 const path = require('path')
 
-const usersRouter = express.createRouter()
+const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 
 usersRouter
